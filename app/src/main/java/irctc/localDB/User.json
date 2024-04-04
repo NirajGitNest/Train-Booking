@@ -1,0 +1,27 @@
+[
+    {
+        "User_id":"453",
+        "name": "Niraj",
+        "hashed_password":"123",
+        "tickets_booked" :{
+            "source":"Bangalore",
+            "destiination":"Mumbai",
+            "date_of_travel":"2024-03-12- 08T18:30:00Z",
+            "train":{
+                "train_id":"bacs",
+                "train_no": 12345,
+                "seats": [
+                    [0,0,0,0,0,0],
+                    [0,0,0,0,0,0],
+                    [0,0,0,0,0,0],
+                    [0,0,0,0,0,0]
+                ],
+            "stations": {
+                "Bangalore": "13:50:00",
+                "Jaipur": "13:50:00",
+                "Delhi": "13:50:00"
+            }
+            }
+        }
+    }
+]

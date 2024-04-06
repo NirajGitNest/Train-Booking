@@ -6,7 +6,6 @@ package irctc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.UUID;
@@ -24,11 +23,13 @@ public class App {
         System.out.println("Running Train Booking System");
         Scanner scanner = new Scanner(System.in);
         int option = 0;
+
         UserBookingService userBookingService;
         try {
             userBookingService = new UserBookingService();
-        } catch (Exception e) {
+        } catch (IOException ex) {
             System.out.println("There is something wrong");
+            return;
         }
 
         while (option != 7) {
@@ -40,7 +41,11 @@ public class App {
             System.out.println("5. Book a Seat");
             System.out.println("6. Cancel my Booking");
             System.out.println("7. Exit the App");
+            // take input
             option = scanner.nextInt();
+
+            // instance of Train
+            Train trainSelectedForBooking = new Train();
 
             switch (option) {
                 case 1:
@@ -90,7 +95,7 @@ public class App {
                     break;
                 case 5:
                     System.out.println("Select a seat out of these seats");
-                    List<List<Integer>> seats = userBookingService.fetchSeats(trainSelectedForBooking);
+                    List<List<Integer>> seats = userBookingService.fetchSeat(trainSelectedForBooking);
                     for (List<Integer> row : seats) {
                         for (Integer val : row) {
                             System.out.print(val + " ");
@@ -110,10 +115,24 @@ public class App {
                         System.out.println("Can't book this seat");
                     }
                     break;
+
+                case 6:
+                    System.out.println("Enter ticket Id to cancel your booking");
+                    String ticketId = scanner.next();
+
+                    userBookingService.cancelBooking(ticketId);
+                    boolean canceled = userBookingService.cancelBooking(ticketId);
+                    if (canceled) {
+                        System.out.println("Booking cancel Successfully");
+                    } else {
+                        System.out.println("Failed to cancel Booking");
+                    }
+
                 default:
+                    System.out.println("Invalid option. Please choose again.");
                     break;
             }
         }
-
+        scanner.close();
     }
 }

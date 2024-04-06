@@ -84,7 +84,7 @@ public class UserBookingService {
         try {
             TrainService trainService = new TrainService();
             return trainService.searchTains(source, destination);
-        } catch (Exception e) {
+        } catch (IOException e) {
             // TODO: handle exception
             return new ArrayList<>();
         }
@@ -94,21 +94,26 @@ public class UserBookingService {
         return train.getSeats();
     }
 
-    public Boolean bookTrainSeat(Train train, int row, int seat){
+    public Boolean bookTrainSeat(Train train, int row, int seat) {
         try {
             TrainService trainService = new TrainService();
             List<List<Integer>> seats = train.getSeats();
 
-            if(row >= 0 && row < seats.size() && seat >= && seat < seats.get(row).size()){
-                if(seats.get(row).get(seat)==0){
+            if (row >= 0 && row < seats.size() && seat >= 0 && seat < seats.get(row).size()) {
+                if (seats.get(row).get(seat) == 0) {
                     seats.get(row).set(seat, 1);
                     train.setSeats(seats);
                     trainService.addTrain(train);
-
+                    return true;
+                } else {
+                    return false;
                 }
+            } else {
+                return false;
             }
         } catch (Exception e) {
             // TODO: handle exception
+            return Boolean.FALSE;
         }
     }
 

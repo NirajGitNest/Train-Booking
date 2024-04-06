@@ -1,15 +1,19 @@
 package irctc.services;
 
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+// import com.google.common.base.Optional;
 
 import irctc.entities.Train;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 public class TrainService {
 
@@ -38,4 +42,41 @@ public class TrainService {
         return sourceIndex != -1 && destinationIndex != -1 && sourceIndex < destinationIndex;
     }
 
+    public void addTrain(Train newTrain) {
+        Optional<Train> existingTrain = trainList.stream()
+                .filter(train -> train.getTrainId().equalsIgnoreCase(newTrain.getTrainId())).findFirst();
+
+        if (existingTrain.isPresent()) {
+            // if trainId exist update instead of adding new one
+            updateTrain(newTrain);
+        } else {
+            // otherwise add the train to list
+            trainList.add(newTrain);
+            saveTrainListToFile();
+        }
+
+    }
+
+    public void updateTrain(Train updatedTrain) {
+        // find the index of the train with same trainId
+        OptionalInt index = IntStream.range(0, trainList.size())
+                .filter(i -> trainList.get(i).getTrainId().equalsIgnoreCase(updatedTrain.getTrainId())).findFirst();
+
+        if (index.isPresent()) {
+            // found, replace the train with updated one
+            trainList.set(index.getAsInt(), updatedTrain);
+            saveTrainListToFile();
+        } else {
+            // If not found, treat it as adding a new train
+            addTrain(updatedTrain);
+        }
+    }
+
+    private void saveTrainListToFile() {
+        try {
+            objectMapper.writeValue(new File(TRAIN_DB_PATH), trainList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
